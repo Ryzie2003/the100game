@@ -45,7 +45,7 @@ function App() {
 
   const revealDelay = 100;
 
-  // message stays for 2 seconds
+  // message stays for 2 second
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
