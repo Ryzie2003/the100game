@@ -241,8 +241,8 @@ function App() {
           <button onClick={handleGuess} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Guess</button>
         </>
       ) : (
-        <>
-        <h2 className="text-2xl mt-4">Game Over! Final Score: {score}</h2>
+        <div className='flex flex-col items-center justify-center'>
+        <h2 className="text-2xl mt-4 md:w-50">Game Over! Final Score: {score}</h2>
         <div className="flex flex-col gap-3 mt-6">
           <button
             onClick={handleRevealAnswers}
@@ -257,7 +257,7 @@ function App() {
             Share Score
           </button>
         </div>
-      </>
+      </div>
       )}
 
           {/* ATTEMPTS INDICATOR */}
