@@ -85,7 +85,7 @@ export default function FlipCard(props: FlipCardProps) {
           <div className="flip-card w-full h-full">
             <div className={`flip-card-inner w-full h-full ${flipping ? 'flipped' : ''}`}>
               <div className="flip-card-front">
-                {`${index + 1}. ${song.song_title}`}
+                {`${index + 1}. ${song.song_and_artist}`}
               </div>
               <div className="flip-card-back">
                 {`Streams: ${song.streams}`}
