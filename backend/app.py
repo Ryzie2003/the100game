@@ -1,10 +1,14 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../dist', static_url_path='')
 CORS(app)
+
+@app.route('/')
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/api/songs', methods=['GET'])
 def get_most_streamed_songs():
@@ -61,4 +65,4 @@ def get_most_streamed_songs():
     return jsonify(results)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8040)
+    app.run()
