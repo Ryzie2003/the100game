@@ -13,11 +13,25 @@ function App() {
   const [revealAnswers, setRevealAnswers] = useState(false);
   // An array to track which country indexes have been revealed
   const [revealed, setRevealed] = useState<boolean[]>([]);
+  // guess history toggle
+  const [showHistory, setShowHistory] = useState(false);
+  // user feedback
+  const [message, setMessage] = useState('');
   const listRef = useRef(null);
-  const maxAttempts = 6;
+  const maxAttempts = 5;
   const itemHeight = 40;
 
-  const revealDelay = 50;
+  const revealDelay = 100;
+
+  // message stays for 2 seconds
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage('');
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   useEffect(() => {
     // Fetch population data from the Flask API
@@ -29,17 +43,36 @@ function App() {
 
   const handleGuess = () => {
     if (attempts >= maxAttempts) return;
+    const trimmedGuess = guess.trim().toLowerCase();
 
-    const index = dataSet.findIndex(name => name.country.toLowerCase() === guess.toLowerCase());
-    let points = index !== -1 ? index + 1 : 0;
+    // 1) Prevent empty or whitespace-only guesses
+    if (!trimmedGuess) {
+      setMessage("Please enter a valid country name.");
+      return;
+    }
 
-    if (index !== -1) {
-      setGuesses([...guesses, { name: guess, points, index }]);
+    // 2) Prevent duplicate guesses
+    const alreadyGuessed = guesses.some(
+      (g) => g.name.toLowerCase() === trimmedGuess
+    );
+    if (alreadyGuessed) {
+      setMessage(`${guess} already guessed!`);
+      return; // Do not increment attempts or add guess
+    }
+
+    // 3) Check if guess is in data set
+    const index = dataSet.findIndex(
+      (item) => item.country.toLowerCase() === trimmedGuess
+    );
+    const points = index !== -1 ? index + 1 : 0;
+
+    // 4) Update guesses, score, attempts
+    setGuesses([...guesses, { name: guess, points, index }]);
+    if (points) {
       setScore(score + points);
     } else {
-      setGuesses([...guesses, { name: guess, points: 0, index: -1 }]);
+      setMessage(`"${guess}" is not in the Top 100. 0 points.`);
     }
-    
     setAttempts(attempts + 1);
     setGuess('');
   };
@@ -57,19 +90,15 @@ function App() {
 
   const handleRevealAnswers = () => {
     setRevealAnswers(true);
-    for (let i = dataSet.length - 1; i >= 0; i--) {
+    const revealCount = Math.min(10, dataSet.length);
+    for (let i = 100; i >= 0; i--) {
       setTimeout(() => {
         setRevealed((prev) => {
           const updated = [...prev];
           updated[i] = true;
           return updated;
         });
-        // Scroll the list to make the current revealed item visible
-        if (listRef.current) {
-          const scrollPosition = i * itemHeight;
-          listRef.current.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-        }
-      }, revealDelay * (dataSet.length - i));
+      }, revealDelay * (10 - i));
     }
   };
 
@@ -80,11 +109,16 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen text-center bg-[#EBE2D2]">
-      <h1 className='text-5xl mb-4 font-bold'>The 100 Game</h1>
+    <div className="flex flex-col justify-center items-center h-screen text-center">
+      <h1 className='text-[3.5em] mb-4 font-bold'>The 100 Game</h1>
       <p className='text-lg'>Topic: Most Populated Countries</p>
+      {message && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
+          {message}
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:gap-8 md:mt-8">
-      <div className="relative w-64 h-100 overflow-hidden border rounded mt-1" ref={listRef}>
+      <div className= "relative w-64 h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
         <ul className= "h-[full] relative" >
           {dataSet.map((name, index) => {
             const isGuessed = guesses.some((g) => g.index === index);
@@ -94,9 +128,19 @@ function App() {
                 key={index}
                 style={{ height: itemHeight }}
                 className={`group text-lg p-1.5 relative ${
-                  isRevealed ? (isGuessed ? 'bg-green-300 font-bold' : 'bg-white') : 'bg-white blurred'
+                  isRevealed ? (isGuessed ? 'bg-green-400 font-bold' : 'bg-white') : 'bg-white blurred'
                 }`}
-              >{`${index + 1}. ${name.country}`}</li>
+              >{isRevealed ? <div className="flip-card w-full h-full">
+                <div className="flip-card-inner w-full h-full">
+                  <div className="flip-card-front">
+                    {`${index + 1}. ${name.country}`}
+                  </div>
+                  <div className="flip-card-back">
+                    {`Population: ${name.population}`}
+                  </div>
+                </div>
+              </div>
+                : `${index + 1}. ???`}</li>
               )})}
         </ul>
       </div>
@@ -133,6 +177,9 @@ function App() {
         </div>
       </>
       )}
+
+          {/* ATTEMPTS INDICATOR */}
+          {attempts < maxAttempts && 
            <div className="flex flex-row-reverse gap-2 mt-8">
             {Array.from({ length: maxAttempts }).map((_, idx) => {
               // If idx < attempts, that means the rightmost circles get filled first
@@ -148,7 +195,7 @@ function App() {
                 ></div>
               );
             })}
-          </div>
+          </div>}
         </div>
       </div>
     </div>

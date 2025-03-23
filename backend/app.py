@@ -3,6 +3,8 @@ from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 
+# geography, entertainment, sports, history, science + nature, miscellaneous
+
 app = Flask(__name__)
 CORS(app)
 
@@ -28,7 +30,7 @@ def get_population():
 
         countries = []
 
-        rows = table.find_all("tr")[1:101]  # Skip header row and limit to top 100
+        rows = table.find_all("tr")[2:102]  # Skip header row and limit to top 100
 
         for row in rows:
             cols = row.find_all("td")
