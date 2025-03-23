@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useId } from 'react';
 import './App.css';
 import axios from 'axios';
 
+// geography, entertainment, sports, history, science + nature, miscellaneous
+
 
 function App() {
   const [guess, setGuess] = useState('');
@@ -17,6 +19,10 @@ function App() {
   const [showHistory, setShowHistory] = useState(false);
   // user feedback
   const [message, setMessage] = useState('');
+
+  // instructions modal
+  const [showInstructions, setShowInstructions] = useState(false);
+
   const listRef = useRef(null);
   const maxAttempts = 5;
   const itemHeight = 40;
@@ -35,7 +41,7 @@ function App() {
 
   useEffect(() => {
     // Fetch population data from the Flask API
-    fetch('http://localhost:8040/api/population')
+    fetch('http://localhost:8040/api/songs')
       .then((response) => response.json())
       .then((data) => {setDataSet(data)})  // Store the data in the `countries` state
       .catch((error) => console.error("Error fetching data:", error));
@@ -47,7 +53,7 @@ function App() {
 
     // 1) Prevent empty or whitespace-only guesses
     if (!trimmedGuess) {
-      setMessage("Please enter a valid country name.");
+      setMessage("Please enter a valid song name.");
       return;
     }
 
@@ -62,7 +68,7 @@ function App() {
 
     // 3) Check if guess is in data set
     const index = dataSet.findIndex(
-      (item) => item.country.toLowerCase() === trimmedGuess
+      (item) => item.song_title.toLowerCase() === trimmedGuess
     );
     const points = index !== -1 ? index + 1 : 0;
 
@@ -110,14 +116,48 @@ function App() {
 
   return (
     <div className="flex flex-col justify-center items-center h-screen text-center">
-      <h1 className='text-[3.5em] mb-4 font-bold'>The 100 Game</h1>
-      <p className='text-lg'>Topic: Most Populated Countries</p>
+      <h1 className='text-[3.5em] mb-1 font-bold'>The 100 Game</h1>
+      <p className='text-lg'>Topic: Most Streamed Songs on Spotify</p>
       {message && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
           {message}
         </div>
       )}
-      <div className="flex flex-col md:flex-row md:gap-8 md:mt-8">
+      {/* How to Play Button */}
+      <button
+        onClick={() => setShowInstructions(true)}
+        className="fixed bottom-4 right-4 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600"
+        title="How to Play"
+      >
+        ?
+      </button>
+       {/* Instructions Modal */}
+       {showInstructions && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md mx-auto">
+            <h2 className="text-xl font-bold mb-4">How to Play</h2>
+            <p className="text-left">
+              <strong>Objective:</strong> Total the most points by guessing items in the top 100 list.
+            </p>
+            <p className="mt-2 text-left">
+              <strong>Scoring:</strong> Points are based on the ranking of your correct guess. Higher ranks earn more points (i.e. rank 99 earns 99 points). 
+              
+              <em> If your guess is invalid or not in the top 100, you get 0 points.</em>
+            </p>
+            <p className="mt-2 text-left">
+              <strong>Gameplay:</strong> You have 5 attempts. When items are revealed, hover over them for additional details.
+            </p>
+
+            <button
+              onClick={() => setShowInstructions(false)}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
+      <div className="flex flex-col md:flex-row md:gap-8 md:mt-5 lg:gap-14 lg:mt-8">
       <div className= "relative w-64 h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
         <ul className= "h-[full] relative" >
           {dataSet.map((name, index) => {
@@ -133,10 +173,10 @@ function App() {
               >{isRevealed ? <div className="flip-card w-full h-full">
                 <div className="flip-card-inner w-full h-full">
                   <div className="flip-card-front">
-                    {`${index + 1}. ${name.country}`}
+                    {`${index + 1}. ${name.song_title}`}
                   </div>
                   <div className="flip-card-back">
-                    {`Population: ${name.population}`}
+                    {`Streams: ${name.streams}`}
                   </div>
                 </div>
               </div>
@@ -154,7 +194,7 @@ function App() {
             onChange={(e) => setGuess(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
             className="border-2 p-2 text-xl rounded mt-3"
-            placeholder="Enter country"
+            placeholder="Enter song"
           />
           <button onClick={handleGuess} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Guess</button>
         </>

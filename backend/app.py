@@ -3,53 +3,62 @@ from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
 
-# geography, entertainment, sports, history, science + nature, miscellaneous
-
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/api/population', methods=['GET'])
-def get_population():
-    # URL of the Worldometer page
-    url = "https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population"
+@app.route('/api/songs', methods=['GET'])
+def get_most_streamed_songs():
+    url = "https://kworb.net/spotify/songs.html"
+    headers = {"User-Agent": "Mozilla/5.0"}  # Mimic a real browser
 
-    headers = {"User-Agent": "Mozilla/5.0"}
-    # Make an HTTP request to the Worldometers page
-    response = requests.get(url)
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return jsonify({"message": "Failed to fetch page"}), 500
 
-    # If the request is successful
-    if response.status_code == 200:
-        # Parse the HTML using BeautifulSoup
-        soup = BeautifulSoup(response.text, 'html.parser')
+    # Parse the page HTML
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # Locate the main table - adjust the selector if there's a unique ID or class
+    table = soup.find("table")
+    if not table:
+        return jsonify({"message": "Table not found"}), 500
 
-        # Find the table rows (representing each country)
-        table = soup.find("table", {"class": "wikitable"})
+    # Locate the table body (if it exists)
+    tbody = table.find("tbody")
+    if tbody:
+        rows = tbody.find_all("tr")
+    else:
+        # If no <tbody>, take all <tr> after the header row
+        rows = table.find_all("tr")[1:]  # skip the header row
 
-        if not table:
-            return jsonify({"message": "Table not found"}), 500
+    results = []
+    # Limit to top 100 rows
+    for i, row in enumerate(rows):
+        if i >= 100:
+            break
 
-        countries = []
+        cells = row.find_all("td")
+        # We expect exactly 3 columns: Rank, Streams, Artist and Title
+        if len(cells) < 3:
+            continue
 
-        rows = table.find_all("tr")[2:102]  # Skip header row and limit to top 100
+        
+        streams = cells[1].get_text(strip=True)
+        artist_title = cells[0].get_text(strip=True)
 
-        for row in rows:
-            cols = row.find_all("td")
+        
+        parts = artist_title.split(" - ", 1)
 
-            if len(cols) >= 2:
-                country_name = cols[0].text.strip()  # Country name column
-                population = cols[1].text.strip().split("[")[0]  # Remove references
+        if len(parts) == 2:
+            artist = parts[0]
+            song_title = parts[1]
 
-                countries.append({
-                    'country': country_name,
-                    'population': population
-                })
+        results.append({
+            "streams": streams,
+            "song_title": song_title
+        })
 
-        return jsonify(countries)
-
-    return jsonify({"message": "Failed to fetch data"}), 500
-
+    return jsonify(results)
 
 if __name__ == '__main__':
     app.run(debug=True, port=8040)
-
-
