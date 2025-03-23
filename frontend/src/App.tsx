@@ -8,6 +8,7 @@ const dailyTopic = "Most Streamed Songs on Spotify";
 interface Song {
   song_title: string;
   streams: number;
+  song_and_artist: string;
 }
 
 interface Guess {
@@ -206,6 +207,7 @@ function App() {
       <div className= "relative w-64 h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
         <ul className= "h-[full] relative" >
           {dataSet.map((name, index) => {
+            console.log(name);
             const isGuessed = guesses.some((g) => g.index === index);
             const isRevealed = isGuessed || (revealAnswers && revealed[index]);
             return (

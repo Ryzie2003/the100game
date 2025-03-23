@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 interface Song {
   song_title: string;
   streams: number;
+  song_and_artist: string;
 }
 
 interface FlipCardProps {
