@@ -35,6 +35,7 @@ function useInView(options: IntersectionObserverInit): [React.RefObject<HTMLLIEl
 
     return () => {
       if (ref.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         observer.unobserve(ref.current);
       }
     };
@@ -85,10 +86,12 @@ export default function FlipCard(props: FlipCardProps) {
         {isRevealed ? (
           <div className="flip-card w-full h-full">
             <div className={`flip-card-inner w-full h-full ${flipping ? 'flipped' : ''}`}>
-              <div className="flip-card-front">
+              <div className={`flip-card-front ${
+                song.song_and_artist.length > 25 ? 'text-xs' : 'text-[0.85em]'
+              }`}>
                 {`${index + 1}. ${song.song_and_artist}`}
               </div>
-              <div className="flip-card-back">
+              <div className="flip-card-back text-[0.85em]">
                 {`Streams: ${song.streams}`}
               </div>
             </div>
