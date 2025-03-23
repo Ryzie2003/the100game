@@ -4,7 +4,7 @@ import axios from 'axios';
 import FlipCard from './components/FlipCard';
 
 // geography, entertainment, sports, history, science + nature, miscellaneous
-
+const dailyTopic = "Most Streamed Songs on Spotify";
 
 function App() {
   const [guess, setGuess] = useState('');
@@ -16,8 +16,7 @@ function App() {
   const [revealAnswers, setRevealAnswers] = useState(false);
   // An array to track which country indexes have been revealed
   const [revealed, setRevealed] = useState<boolean[]>([]);
-  // guess history toggle
-  const [showHistory, setShowHistory] = useState(false);
+
   // user feedback
   const [message, setMessage] = useState('');
 
@@ -27,6 +26,8 @@ function App() {
   // initial flip after user guesses correctly
   const [flipping, setFlipping] = useState({});
   const [pendingFlip, setPendingFlip] = useState({});
+
+  const [shakeInput, setShakeInput] = useState(false);
   const listRef = useRef(null);
   const maxAttempts = 5;
   const itemHeight = 40;
@@ -38,7 +39,7 @@ function App() {
     if (message) {
       const timer = setTimeout(() => {
         setMessage('');
-      }, 2000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
   }, [message]);
@@ -51,9 +52,20 @@ function App() {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
+ 
+
+  function normalize(str) {
+    return str
+      .toLowerCase()
+      .replace(/[^\w\s]|_/g, "") // remove punctuation and underscores
+      .replace(/\s+/g, " ")      // collapse multiple spaces
+      .trim();
+  }
+  
+
   const handleGuess = () => {
     if (attempts >= maxAttempts) return;
-    const trimmedGuess = guess.trim().toLowerCase();
+    const trimmedGuess = normalize(guess);
 
     // 1) Prevent empty or whitespace-only guesses
     if (!trimmedGuess) {
@@ -72,7 +84,7 @@ function App() {
 
     // 3) Check if guess is in data set
     const index = dataSet.findIndex(
-      (item) => item.song_title.toLowerCase() === trimmedGuess
+      (item) => normalize(item.song_title) === trimmedGuess
     );
     const points = index !== -1 ? index + 1 : 0;
 
@@ -85,6 +97,9 @@ function App() {
       setPendingFlip((prev) => ({ ...prev, [index]: true }));
     } else {
       setMessage(`"${guess}" is not in the Top 100. 0 points.`);
+
+      setShakeInput(true);
+      setTimeout(() => setShakeInput(false), 500);
     }
     setAttempts(attempts + 1);
     setGuess('');
@@ -102,7 +117,7 @@ function App() {
   }, [guesses]);
 
   const handleRevealAnswers = () => {
-    setRevealAnswers(true);
+    setRevealAnswers(prev => !prev);
     const revealCount = Math.min(10, dataSet.length);
     for (let i = 100; i >= 0; i--) {
       setTimeout(() => {
@@ -116,26 +131,10 @@ function App() {
   };
 
 
-  const handleShareScore = () => {
-    const shareMessage = `I scored ${score} points in The 100 Game! Can you beat my score?`;
-    
-    if (navigator.share) {
-      navigator
-        .share({
-          title: 'The 100 Game Score',
-          text: shareMessage,
-          url: window.location.href,
-        })
-        .then(() => {
-          setMessage("Score shared successfully!");
-        })
-        .catch((error) => {
-          console.error("Error sharing:", error);
-          setMessage("Error sharing score.");
-        });
-    } else if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(shareMessage)
+  const handleCopyScore = () => {
+    const shareMessage = `Play The 100 Game! I scored ${score} points in The 100 Game: ${dailyTopic}! Check it out at ${window.location.href}. Can you beat my score?`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(shareMessage)
         .then(() => {
           setMessage("Score copied to clipboard!");
         })
@@ -144,15 +143,16 @@ function App() {
           setMessage("Failed to copy score.");
         });
     } else {
-      setMessage("Sharing is not supported in this browser.");
+      setMessage("Clipboard not supported in this browser.");
     }
   };
   
 
   return (
     <div className="flex flex-col justify-center items-center h-screen text-center">
-      <h1 className='text-[3.5em] mb-1 font-bold'>The 100 Game</h1>
-      <p className='text-lg'>Topic: Most Streamed Songs on Spotify</p>
+      <h1 className='text-[3.5em] mb-[-5px] font-bold'>The 100 Game</h1>
+      <p className='text-lg mb-4'>Topic: {dailyTopic}</p>
+      <p>Guess songs in the Top 100 - closer to 100th song is better!</p>
       {message && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
           {message}
@@ -223,24 +223,24 @@ function App() {
             value={guess}
             onChange={(e) => setGuess(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
-            className="border-2 p-2 text-xl rounded mt-3"
-            placeholder="Enter song"
+            className={`border-2 p-2 text-xl rounded mt-3 ${shakeInput ? "shake border-red-500" : "border-black"}`}
+            placeholder="Enter song name"
           />
           <button onClick={handleGuess} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Guess</button>
         </>
       ) : (
         <>
         <h2 className="text-2xl mt-4">Game Over! Final Score: {score}</h2>
-        <div className="flex flex-col gap-4 mt-6">
+        <div className="flex flex-col gap-3 mt-6">
           <button
             onClick={handleRevealAnswers}
-            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+            className="w-35 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
           >
-            Reveal Answers
+            {revealAnswers ? 'Hide Answers' : 'Reveal Answers' }
           </button>
           <button
-            onClick={handleShareScore}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500"
+            onClick={handleCopyScore}
+            className="w-35 h-11 bg-green-600 text-white rounded hover:bg-green-500"
           >
             Share Score
           </button>

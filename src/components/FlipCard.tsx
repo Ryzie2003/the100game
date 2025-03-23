@@ -52,7 +52,7 @@ export default function FlipCard({
             // Reset the flip after another second
             const flipTimer = setTimeout(() => {
               setFlipping((prev) => ({ ...prev, [index]: false }));
-            }, 1000);
+            }, 1500);
             return () => clearTimeout(flipTimer);
           }, 1000);
           return () => clearTimeout(timer);
