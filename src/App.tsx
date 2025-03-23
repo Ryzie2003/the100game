@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useId } from 'react';
 import './App.css';
 import axios from 'axios';
+import FlipCard from './components/FlipCard';
 
 // geography, entertainment, sports, history, science + nature, miscellaneous
 
@@ -22,7 +23,10 @@ function App() {
 
   // instructions modal
   const [showInstructions, setShowInstructions] = useState(false);
-
+  
+  // initial flip after user guesses correctly
+  const [flipping, setFlipping] = useState({});
+  const [pendingFlip, setPendingFlip] = useState({});
   const listRef = useRef(null);
   const maxAttempts = 5;
   const itemHeight = 40;
@@ -76,6 +80,9 @@ function App() {
     setGuesses([...guesses, { name: guess, points, index }]);
     if (points) {
       setScore(score + points);
+
+      // triggering flip animation
+      setPendingFlip((prev) => ({ ...prev, [index]: true }));
     } else {
       setMessage(`"${guess}" is not in the Top 100. 0 points.`);
     }
@@ -110,9 +117,37 @@ function App() {
 
 
   const handleShareScore = () => {
-    // For example, copy the score to clipboard or invoke social sharing
-    console.log("Share Score clicked!");
+    const shareMessage = `I scored ${score} points in The 100 Game! Can you beat my score?`;
+    
+    if (navigator.share) {
+      navigator
+        .share({
+          title: 'The 100 Game Score',
+          text: shareMessage,
+          url: window.location.href,
+        })
+        .then(() => {
+          setMessage("Score shared successfully!");
+        })
+        .catch((error) => {
+          console.error("Error sharing:", error);
+          setMessage("Error sharing score.");
+        });
+    } else if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(shareMessage)
+        .then(() => {
+          setMessage("Score copied to clipboard!");
+        })
+        .catch((err) => {
+          console.error("Error copying score to clipboard:", err);
+          setMessage("Failed to copy score.");
+        });
+    } else {
+      setMessage("Sharing is not supported in this browser.");
+    }
   };
+  
 
   return (
     <div className="flex flex-col justify-center items-center h-screen text-center">
@@ -164,23 +199,18 @@ function App() {
             const isGuessed = guesses.some((g) => g.index === index);
             const isRevealed = isGuessed || (revealAnswers && revealed[index]);
             return (
-              <li
+              <FlipCard
                 key={index}
-                style={{ height: itemHeight }}
-                className={`group text-lg p-1.5 relative ${
-                  isRevealed ? (isGuessed ? 'bg-green-400 font-bold' : 'bg-white') : 'bg-white blurred'
-                }`}
-              >{isRevealed ? <div className="flip-card w-full h-full">
-                <div className="flip-card-inner w-full h-full">
-                  <div className="flip-card-front">
-                    {`${index + 1}. ${name.song_title}`}
-                  </div>
-                  <div className="flip-card-back">
-                    {`Streams: ${name.streams}`}
-                  </div>
-                </div>
-              </div>
-                : `${index + 1}. ???`}</li>
+                index={index}
+                song={name}
+                isGuessed={isGuessed}
+                isRevealed={isRevealed}
+                itemHeight={itemHeight}
+                pendingFlip={pendingFlip[index]}
+                setPendingFlip={setPendingFlip}
+                flipping={flipping[index]}
+                setFlipping={setFlipping}
+              />    
               )})}
         </ul>
       </div>

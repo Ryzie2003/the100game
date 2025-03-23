@@ -63,4 +63,8 @@ body {
     transform: rotateY(180deg);
   }
   
+  .flip-card-inner.flipped {
+    transform: rotateY(180deg);
+  }
+  
   
