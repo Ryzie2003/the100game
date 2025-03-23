@@ -1,8 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 
-function useInView(options) {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
+
+interface Song {
+  song_title: string;
+  streams: number;
+}
+
+interface FlipCardProps {
+  index: number;
+  song: Song;
+  isGuessed: boolean;
+  isRevealed: boolean;
+  itemHeight: number;
+  pendingFlip: boolean;
+  setPendingFlip: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
+  flipping: boolean;
+  setFlipping: React.Dispatch<React.SetStateAction<Record<number, boolean>>>;
+}
+
+
+function useInView(options: IntersectionObserverInit): [React.RefObject<HTMLLIElement | null>, boolean] {
+  const ref = useRef<HTMLLIElement | null>(null);
+  const [inView, setInView] = useState<boolean>(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
@@ -25,17 +44,10 @@ function useInView(options) {
 
 
 
-export default function FlipCard({
-    index,
-    song,
-    isGuessed,
-    isRevealed,
-    itemHeight,
-    pendingFlip,
-    setPendingFlip,
-    flipping,
-    setFlipping,
-  }) {
+export default function FlipCard(props: FlipCardProps) {
+    
+    const { index, song, isGuessed, isRevealed, itemHeight, pendingFlip, setPendingFlip, flipping, setFlipping } = props;
+
     // Use the custom hook with a threshold to detect when the card is at least half visible.
     const [cardRef, inView] = useInView({ threshold: 0.5 });
   

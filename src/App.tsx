@@ -1,34 +1,45 @@
-import { useState, useRef, useEffect, useId } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './App.css';
-import axios from 'axios';
 import FlipCard from './components/FlipCard';
 
 // geography, entertainment, sports, history, science + nature, miscellaneous
 const dailyTopic = "Most Streamed Songs on Spotify";
 
+interface Song {
+  song_title: string;
+  streams: number;
+}
+
+interface Guess {
+  name: string;
+  points: number;
+  index: number;
+}
+
+
 function App() {
-  const [guess, setGuess] = useState('');
-  const [attempts, setAttempts] = useState(0);
-  const [score, setScore] = useState(0);
-  const [guesses, setGuesses] = useState([]);
-  const [dataSet, setDataSet] = useState([]);
+  const [guess, setGuess] = useState<string>('');
+  const [attempts, setAttempts] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [guesses, setGuesses] = useState<Guess[]>([]);
+  const [dataSet, setDataSet] = useState<Song[]>([]);
   // Controls whether the reveal animation has been triggered
-  const [revealAnswers, setRevealAnswers] = useState(false);
+  const [revealAnswers, setRevealAnswers] = useState<boolean>(false);
   // An array to track which country indexes have been revealed
   const [revealed, setRevealed] = useState<boolean[]>([]);
 
   // user feedback
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<string>('');
 
   // instructions modal
-  const [showInstructions, setShowInstructions] = useState(false);
+  const [showInstructions, setShowInstructions] = useState<boolean>(false);
   
   // initial flip after user guesses correctly
-  const [flipping, setFlipping] = useState({});
-  const [pendingFlip, setPendingFlip] = useState({});
+  const [flipping, setFlipping] = useState<Record<number, boolean>>({});
+  const [pendingFlip, setPendingFlip] = useState<Record<number, boolean>>({});
 
-  const [shakeInput, setShakeInput] = useState(false);
-  const listRef = useRef(null);
+  const [shakeInput, setShakeInput] = useState<boolean>(false);
+  const listRef = useRef<HTMLDivElement>(null);
   const maxAttempts = 5;
   const itemHeight = 40;
 
@@ -54,7 +65,7 @@ function App() {
 
  
 
-  function normalize(str) {
+  function normalize(str: string) {
     return str
       .toLowerCase()
       .replace(/[^\w\s]|_/g, "") // remove punctuation and underscores
@@ -118,7 +129,6 @@ function App() {
 
   const handleRevealAnswers = () => {
     setRevealAnswers(prev => !prev);
-    const revealCount = Math.min(10, dataSet.length);
     for (let i = 100; i >= 0; i--) {
       setTimeout(() => {
         setRevealed((prev) => {
