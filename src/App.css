@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+.blurred {
+    filter: blur(6px);
+    /* optional: prevents selecting blurred text */
+    user-select: none;
+}
+  
