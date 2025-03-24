@@ -41,7 +41,7 @@ function App() {
 
   const [shakeInput, setShakeInput] = useState<boolean>(false);
   const listRef = useRef<HTMLDivElement>(null);
-  const maxAttempts = 5;
+  const maxAttempts = 6;
   const itemHeight = 40;
 
   const revealDelay = 100;
@@ -243,16 +243,16 @@ function App() {
       ) : (
         <div className='flex flex-col items-center justify-center'>
         <h2 className="text-2xl mt-4 md:w-50">Game Over! Final Score: {score}</h2>
-        <div className="flex flex-col gap-3 mt-6">
+        <div className="flex flex-col gap-y-3 mt-6">
           <button
             onClick={handleRevealAnswers}
-            className="w-35 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
+            className="w-36 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
           >
             {revealAnswers ? 'Hide Answers' : 'Reveal Answers' }
           </button>
           <button
             onClick={handleCopyScore}
-            className="w-35 h-11 bg-green-600 text-white rounded hover:bg-green-500"
+            className="w-36 h-11 bg-green-600 text-white rounded hover:bg-green-500"
           >
             Share Score
           </button>
