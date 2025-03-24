@@ -127,6 +127,9 @@ function App() {
       const itemPosition = lastGuess.index * itemHeight;
       const listEl = listRef.current;
       
+      if (lastGuess.points == 0) {
+        return;
+      }
       // The max scroll offset for the container
       const maxScroll = listEl.scrollHeight - listEl.clientHeight;
   
@@ -248,7 +251,7 @@ function App() {
             value={guess}
             onChange={(e) => setGuess(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
-            className={`border-2 p-2 text-xl rounded md:mt-3 ${shakeInput ? "shake border-red-500" : "border-black"}`}
+            className={`max-w-[200px] border-2 p-2 text-lg rounded md:mt-3 ${shakeInput ? "shake border-red-500" : "border-black"}`}
             placeholder="Enter song name"
           />
           <button onClick={handleGuess} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Guess</button>
