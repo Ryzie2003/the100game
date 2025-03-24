@@ -191,7 +191,7 @@ function App() {
               <em> If your guess is invalid or not in the top 100, you get 0 points.</em>
             </p>
             <p className="mt-2 text-left">
-              <strong>Gameplay:</strong> You have 5 attempts. When items are revealed, hover over them for additional details.
+              <strong>Gameplay:</strong> You have 6 attempts. When items are revealed, hover over them for additional details.
             </p>
 
             <button
