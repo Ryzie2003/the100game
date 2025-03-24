@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import requests
 from bs4 import BeautifulSoup
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -63,4 +64,5 @@ def get_most_streamed_songs():
     return jsonify(results)
 
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get("PORT", 3000))
+    app.run(port=port)
