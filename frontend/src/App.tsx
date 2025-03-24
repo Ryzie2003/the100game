@@ -58,7 +58,7 @@ function App() {
 
   useEffect(() => {
     // Fetch population data from the Flask API
-    fetch('http://localhost:8040/api/songs')
+    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/api/songs')
       .then((response) => response.json())
       .then((data) => {setDataSet(data)})  // Store the data in the `countries` state
       .catch((error) => console.error("Error fetching data:", error));
