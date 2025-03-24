@@ -107,6 +107,10 @@ function App() {
 
       // triggering flip animation
       setPendingFlip((prev) => ({ ...prev, [index]: true }));
+
+      if (points > 60) {
+        setMessage('Great guess!');
+      }
     } else {
       setMessage(`"${guess}" is not in the Top 100. 0 points.`);
 
@@ -118,13 +122,22 @@ function App() {
   };
 
   useEffect(() => {
-    if (guesses.length > 0) {
+    if (guesses.length > 0 && listRef.current) {
       const lastGuess = guesses[guesses.length - 1];
-      const startIndex = Math.floor(lastGuess.index / 10) * 10;
-      if (lastGuess.index !== -1 && listRef.current) {
-        const scrollPosition = startIndex * itemHeight;
-        listRef.current.scrollTo({ top: scrollPosition, behavior: 'smooth' });
-      }
+      const itemPosition = lastGuess.index * itemHeight;
+      const listEl = listRef.current;
+      
+      // The max scroll offset for the container
+      const maxScroll = listEl.scrollHeight - listEl.clientHeight;
+  
+      // To center the item: subtract half the container height
+      // and add half the item height (so the item itself is centered)
+      const desiredCenter = itemPosition - listEl.clientHeight / 2 + itemHeight / 2;
+  
+      // Clamp so we don't scroll beyond the top or bottom
+      const clamped = Math.min(Math.max(desiredCenter, 0), maxScroll);
+  
+      listEl.scrollTo({ top: clamped, behavior: 'smooth' });
     }
   }, [guesses]);
 
@@ -242,7 +255,11 @@ function App() {
         </>
       ) : (
         <div className='flex flex-col items-center justify-center'>
-        <h2 className="text-2xl mt-4 md:w-50">Game Over! Final Score: {score}</h2>
+        {/* <h2 className="text-2xl">Game Over! Final Score: {score}</h2> */}
+        <div className="flex flex-col items-center justify-center min-h-[40px] mt-2 mb-[-0.2em]">
+          <h2 className="text-xl">Game Over! Final Score: {score}</h2>
+        </div>
+
         <div className="flex flex-col gap-y-3 mt-6">
           <button
             onClick={handleRevealAnswers}
