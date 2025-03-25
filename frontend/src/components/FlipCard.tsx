@@ -80,7 +80,7 @@ export default function FlipCard(props: FlipCardProps) {
         key={index}
         style={{ height: itemHeight }}
         className={`group text-lg p-1.5 relative ${
-          isRevealed ? (isGuessed ? 'bg-green-400 font-bold' : 'bg-white') : 'bg-white blurred'
+          isRevealed ? (isGuessed ? 'bg-green-400 font-bold' : 'bg-[#FCFCF4]') : 'bg-[#FCFCF4] blurred'
         }`}
       >
         {isRevealed ? (

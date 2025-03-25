@@ -179,7 +179,7 @@ function App() {
     <div className="flex flex-col justify-center items-center min-h-screen text-center">
       <h1 className='text-[3.5em] mb-[-5px] font-bold'>The 100 Game</h1>
       <p className='text-lg mb-2 md:mb-4'>Topic: {dailyTopic}</p>
-      <p>Guess songs in the Top 100 - the closer you are to #100, the better!</p>
+      <p>Guess the Top 100 - the closer you are to #100, the better!</p>
       {message && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
           {message}
@@ -220,7 +220,7 @@ function App() {
         </div>
       )}
       <div className="flex flex-col md:flex-row md:gap-8 md:mt-5 lg:gap-14 lg:mt-8">
-      <div className= "relative min-w-[250px] w-64 h-80 md:h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
+      <div className= "relative min-w-[250px] w-66 h-80 md:h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
         <ul className= "h-[full] relative" >
           {dataSet.map((name, index) => {
             console.log(name);
@@ -243,7 +243,12 @@ function App() {
         </ul>
       </div>
       <div className="md:w-1/2 lg:w-2/5 flex flex-col items-center justify-center">
-      {attempts < maxAttempts ? <p className='text-xl font-bold mt-2 mb-2 md:mb-4 lg:mb-7'>Total Points: {score}</p> : " " }
+      {attempts < maxAttempts ? 
+      <div className="flex flex-col justify-center items-center">
+        <p className='text-[1.1em] font-light mt-2'>Total Points</p>
+        <p className='text-4xl font-bold mb-2 md:mb-4 lg:mb-7'>{score}</p> 
+      </div>
+      : " " }
       {attempts < maxAttempts ? (
         <>
           <input
@@ -251,10 +256,10 @@ function App() {
             value={guess}
             onChange={(e) => setGuess(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
-            className={`max-w-[200px] border-2 p-2 text-lg rounded md:mt-3 ${shakeInput ? "shake border-red-500" : "border-black"}`}
+            className={`max-w-[200px] bg-white border-2 p-2 text-lg rounded md:mt-3 ${shakeInput ? "shake border-red-500" : "border-black"}`}
             placeholder="Enter song name"
           />
-          <button onClick={handleGuess} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Guess</button>
+          <button onClick={handleGuess} className="mt-4 px-8 py-2 bg-black font-semibold text-white rounded">Guess</button>
         </>
       ) : (
         <div className='flex flex-col items-center justify-center'>
