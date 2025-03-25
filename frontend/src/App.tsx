@@ -58,7 +58,7 @@ function App() {
   //https://the-100-backend-009dc87480ee.herokuapp.com/api/female-names
   useEffect(() => {
     // Fetch population data from the Flask API
-    fetch('http://127.0.0.1:5000/api/female-names')
+    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/api/female-names')
       .then((response) => response.json())
       .then((data) => {console.log(data);setDataSet(data)})  // Store the data in the `countries` state
       .catch((error) => console.error("Error fetching data:", error));
