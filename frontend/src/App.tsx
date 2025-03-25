@@ -363,7 +363,7 @@ function App() {
                   key={idx}
                   className={`w-5 h-5 rounded-full border-2 ${
                     usedAttempt
-                      ? 'border-black bg-white'
+                      ? 'bg-white'
                       : 'border-blue-400 bg-blue-400'
                   }`}
                 ></div>
