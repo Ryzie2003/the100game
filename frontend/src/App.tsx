@@ -3,7 +3,6 @@ import './App.css';
 import FlipCard from './components/FlipCard';
 
 // geography, entertainment, sports, history, science + nature, miscellaneous
-const dailyTopic = "Highest Grossing Films - All Time";
 
 interface TopicOfTheDay {
   name: string;
@@ -23,6 +22,17 @@ function App() {
   const [score, setScore] = useState<number>(0);
   const [guesses, setGuesses] = useState<Guess[]>([]);
   const [dataSet, setDataSet] = useState<TopicOfTheDay[]>([]);
+  const [dailyTopic, setDailyTopic] = useState<string>("Highest Grossing Films - All Time");
+  
+  const [archiveTopics, setArchiveTopics] = useState<string[]>([
+    "Highest Grossing Films - All Time",
+    "Most Popular Girl Names",
+    "Most Streamed Songs on Spotify - All Time"
+  ]);
+
+  // State for showing the archive modal
+  const [showArchive, setShowArchive] = useState<boolean>(false);
+  
   // Controls whether the reveal animation has been triggered
   const [revealAnswers, setRevealAnswers] = useState<boolean>(false);
   // An array to track which country indexes have been revealed
@@ -177,6 +187,16 @@ function App() {
       setMessage("Clipboard not supported in this browser.");
     } 
   };
+
+  const handleSelectTopic = (topic: string) => {
+    setDailyTopic(topic);
+    setAttempts(0);
+    setScore(0);
+    setGuesses([]);
+    setRevealAnswers(false);
+    setRevealed([]);
+    setShowArchive(false);
+  };
   
 
   return (
@@ -197,6 +217,40 @@ function App() {
       >
         ?
       </button>
+      {/* Archive Button */}
+      <p
+        onClick={() => setShowArchive(true)}
+        className="fixed bottom-4 left-4 text-gray-600 text-lg flex items-center justify-center cursor-pointer hover:text-black"
+        title="Archive"
+      >
+        Archive
+      </p>
+      {/* Archive Modal */}
+      {showArchive && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md mx-auto">
+            <h2 className="text-xl font-bold mb-4">Select an Archived Topic</h2>
+            <ul>
+              {archiveTopics.map((topic, idx) => (
+                <li key={idx}>
+                  <button
+                    onClick={() => handleSelectTopic(topic)}
+                    className="w-full text-left p-2 hover:bg-gray-200 rounded"
+                  >
+                    {topic}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              onClick={() => setShowArchive(false)}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
        {/* Instructions Modal */}
        {showInstructions && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-50 z-50">
