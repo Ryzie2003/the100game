@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 
 interface TopicOfTheDay {
   name: string;
-  count: number;
+  count: string;
 }
 
 interface FlipCardProps {
@@ -91,7 +91,7 @@ export default function FlipCard(props: FlipCardProps) {
                 {`${index + 1}. ${topicOfTheDay.name}`}
               </div>
               <div className="flip-card-back text-[0.85em]">
-                {`People: ${topicOfTheDay.count}`}
+                {`Gross: ${topicOfTheDay.count}`}
               </div>
             </div>
           </div>

@@ -3,11 +3,11 @@ import './App.css';
 import FlipCard from './components/FlipCard';
 
 // geography, entertainment, sports, history, science + nature, miscellaneous
-const dailyTopic = "Most Common Girl Names - U.S.";
+const dailyTopic = "Highest Grossing Films - All Time";
 
 interface TopicOfTheDay {
   name: string;
-  count: number;
+  count: string;
 }
 
 interface Guess {
@@ -60,7 +60,7 @@ function App() {
   //https://the-100-backend-009dc87480ee.herokuapp.com/api/female-names
   useEffect(() => {
     // Fetch population data from the Flask API
-    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/api/female-names')
+    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/api/top-movies')
       .then((response) => response.json())
       .then((data) => {console.log(data);setDataSet(data)})  // Store the data in the `countries` state
       .catch((error) => console.error("Error fetching data:", error));
