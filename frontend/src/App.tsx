@@ -41,7 +41,7 @@ function App() {
   const [shakeInput, setShakeInput] = useState<boolean>(false);
   const listRef = useRef<HTMLDivElement>(null);
   const maxAttempts = 6;
-  const itemHeight = 40;
+  const itemHeight = 48;
 
   const revealDelay = 100;
 
@@ -111,7 +111,9 @@ function App() {
       setPendingFlip((prev) => ({ ...prev, [index]: true }));
 
       if (points > 60) {
-        setMessage('Great guess!');
+        setMessage(`Great guess! +${points} points.`);
+      } else {
+        setMessage(`+${points} points`)
       }
     } else {
       setMessage(`"${guess}" is not in the Top 100. 0 points.`);
@@ -126,7 +128,7 @@ function App() {
   useEffect(() => {
     if (guesses.length > 0 && listRef.current) {
       const lastGuess = guesses[guesses.length - 1];
-      const itemPosition = lastGuess.index * itemHeight;
+      const itemPosition = lastGuess.index * 60;
       const listEl = listRef.current;
       
       if (lastGuess.points == 0) {
@@ -137,7 +139,7 @@ function App() {
   
       // To center the item: subtract half the container height
       // and add half the item height (so the item itself is centered)
-      const desiredCenter = itemPosition - listEl.clientHeight / 2 + itemHeight / 2;
+      const desiredCenter = itemPosition - listEl.clientHeight / 2 + 60 / 2;
   
       // Clamp so we don't scroll beyond the top or bottom
       const clamped = Math.min(Math.max(desiredCenter, 0), maxScroll);
@@ -223,7 +225,7 @@ function App() {
       )}
       <div className="flex flex-col md:flex-row md:gap-8 md:mt-5 lg:gap-14 lg:mt-8">
       <div className= "relative min-w-[250px] w-66 h-80 md:h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
-        <ul className= "h-[full] relative" >
+        <ul className= "h-[full] relative flex flex-col justify-center items-center bg-[#FCFCF4]" >
           {dataSet.map((name, index) => {
             console.log(name);
             const isGuessed = guesses.some((g) => g.index === index);

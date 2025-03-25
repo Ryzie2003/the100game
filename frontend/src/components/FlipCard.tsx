@@ -78,15 +78,15 @@ export default function FlipCard(props: FlipCardProps) {
         ref={cardRef}
         key={index}
         style={{ height: itemHeight }}
-        className={`group text-lg p-1.5 relative ${
-          isRevealed ? (isGuessed ? 'bg-green-400 font-bold' : 'bg-[#FCFCF4]') : 'bg-[#FCFCF4] blurred'
+        className={`text-lg font-semibold flex flex-col justify-center items-center relative w-[90%] border border-black border-double border-2 rounded mt-1.5 mb-1.5 ${
+          isRevealed ? (isGuessed ? 'bg-green-400 font-bold' : 'bg-[#FCFCF4]') : 'bg-[#FCFCF4]'
         }`}
       >
         {isRevealed ? (
           <div className="flip-card w-full h-full">
             <div className={`flip-card-inner w-full h-full ${flipping ? 'flipped' : ''}`}>
               <div className={`flip-card-front ${
-                topicOfTheDay.name.length > 22 ? 'text-sm' : 'text-[0.85em]'
+                topicOfTheDay.name.length > 20 ? 'text-sm' : 'text-[0.85em]'
               }`}>
                 {`${index + 1}. ${topicOfTheDay.name}`}
               </div>
@@ -96,7 +96,7 @@ export default function FlipCard(props: FlipCardProps) {
             </div>
           </div>
         ) : (
-          `${index + 1}. ???`
+          `${index + 1}`
         )}
       </li>
     );
