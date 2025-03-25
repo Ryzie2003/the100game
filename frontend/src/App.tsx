@@ -24,6 +24,7 @@ function App() {
   const [dataSet, setDataSet] = useState<TopicOfTheDay[]>([]);
   const [dailyTopic, setDailyTopic] = useState<string>("Highest Grossing Films - All Time");
   
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [archiveTopics, setArchiveTopics] = useState<string[]>([
     "Highest Grossing Films - All Time",
     "Most Popular Girl Names",
