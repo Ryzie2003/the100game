@@ -5,7 +5,7 @@ import FlipCard from './components/FlipCard';
 // geography, entertainment, sports, history, science + nature, miscellaneous
 const dailyTopic = "Most Common Girl Names - U.S.";
 
-interface GirlNames {
+interface TopicOfTheDay {
   name: string;
   count: number;
 }
@@ -22,7 +22,7 @@ function App() {
   const [attempts, setAttempts] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [guesses, setGuesses] = useState<Guess[]>([]);
-  const [dataSet, setDataSet] = useState<GirlNames[]>([]);
+  const [dataSet, setDataSet] = useState<TopicOfTheDay[]>([]);
   // Controls whether the reveal animation has been triggered
   const [revealAnswers, setRevealAnswers] = useState<boolean>(false);
   // An array to track which country indexes have been revealed
@@ -32,7 +32,7 @@ function App() {
   const [message, setMessage] = useState<string>('');
 
   // instructions modal
-  const [showInstructions, setShowInstructions] = useState<boolean>(false);
+  const [showInstructions, setShowInstructions] = useState<boolean>(true);
   
   // initial flip after user guesses correctly
   const [flipping, setFlipping] = useState<Record<number, boolean>>({});
@@ -44,6 +44,8 @@ function App() {
   const itemHeight = 40;
 
   const revealDelay = 100;
+
+  const gameOver = attempts >= maxAttempts;
 
   // message stays for 2 second
   useEffect(() => {
@@ -171,7 +173,7 @@ function App() {
         });
     } else {
       setMessage("Clipboard not supported in this browser.");
-    }
+    } 
   };
   
 
@@ -230,7 +232,7 @@ function App() {
               <FlipCard
                 key={index}
                 index={index}
-                girlNames={name}
+                topicOfTheDay={name}
                 isGuessed={isGuessed}
                 isRevealed={isRevealed}
                 itemHeight={itemHeight}
@@ -249,7 +251,7 @@ function App() {
         <p className='text-4xl font-bold mb-2 md:mb-4 lg:mb-7'>{score}</p> 
       </div>
       : " " }
-      {attempts < maxAttempts ? (
+      {attempts < maxAttempts && (
         <>
           <input
             type="text"
@@ -261,8 +263,8 @@ function App() {
           />
           <button onClick={handleGuess} className="mt-4 px-8 py-2 bg-black font-semibold text-white rounded">Guess</button>
         </>
-      ) : (
-        <div className='flex flex-col items-center justify-center'>
+      ) }
+       {gameOver && ( <div className='flex flex-col items-center justify-center'>
         {/* <h2 className="text-2xl">Game Over! Final Score: {score}</h2> */}
         <div className="flex flex-col items-center justify-center min-h-[40px] mt-2 mb-[-0.2em]">
           <h2 className="text-xl">Game Over! Final Score: {score}</h2>
@@ -297,7 +299,7 @@ function App() {
                   className={`w-5 h-5 rounded-full border-2 ${
                     usedAttempt
                       ? 'border-gray-300 bg-gray-200'
-                      : 'border-green-500 bg-green-500'
+                      : 'border-blue-400 bg-blue-400'
                   }`}
                 ></div>
               );

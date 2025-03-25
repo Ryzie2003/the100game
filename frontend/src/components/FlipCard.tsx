@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 
 
-interface GirlNames {
+interface TopicOfTheDay {
   name: string;
   count: number;
 }
 
 interface FlipCardProps {
   index: number;
-  girlNames: GirlNames;
+  topicOfTheDay: TopicOfTheDay;
   isGuessed: boolean;
   isRevealed: boolean;
   itemHeight: number;
@@ -47,7 +47,7 @@ function useInView(options: IntersectionObserverInit): [React.RefObject<HTMLLIEl
 
 export default function FlipCard(props: FlipCardProps) {
     
-    const { index, girlNames, isGuessed, isRevealed, itemHeight, pendingFlip, setPendingFlip, flipping, setFlipping } = props;
+    const { index, topicOfTheDay, isGuessed, isRevealed, itemHeight, pendingFlip, setPendingFlip, flipping, setFlipping } = props;
 
     // Use the custom hook with a threshold to detect when the card is at least half visible.
     const [cardRef, inView] = useInView({ threshold: 0.5 });
@@ -86,12 +86,12 @@ export default function FlipCard(props: FlipCardProps) {
           <div className="flip-card w-full h-full">
             <div className={`flip-card-inner w-full h-full ${flipping ? 'flipped' : ''}`}>
               <div className={`flip-card-front ${
-                girlNames.name.length > 22 ? 'text-sm' : 'text-[0.85em]'
+                topicOfTheDay.name.length > 22 ? 'text-sm' : 'text-[0.85em]'
               }`}>
-                {`${index + 1}. ${girlNames.name}`}
+                {`${index + 1}. ${topicOfTheDay.name}`}
               </div>
               <div className="flip-card-back text-[0.85em]">
-                {`People: ${girlNames.count}`}
+                {`People: ${topicOfTheDay.count}`}
               </div>
             </div>
           </div>
