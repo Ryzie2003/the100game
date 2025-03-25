@@ -3,12 +3,11 @@ import './App.css';
 import FlipCard from './components/FlipCard';
 
 // geography, entertainment, sports, history, science + nature, miscellaneous
-const dailyTopic = "Most Streamed Songs on Spotify";
+const dailyTopic = "Most Common Girl Names - U.S.";
 
-interface Song {
-  song_title: string;
-  streams: number;
-  song_and_artist: string;
+interface GirlNames {
+  name: string;
+  count: number;
 }
 
 interface Guess {
@@ -23,7 +22,7 @@ function App() {
   const [attempts, setAttempts] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [guesses, setGuesses] = useState<Guess[]>([]);
-  const [dataSet, setDataSet] = useState<Song[]>([]);
+  const [dataSet, setDataSet] = useState<GirlNames[]>([]);
   // Controls whether the reveal animation has been triggered
   const [revealAnswers, setRevealAnswers] = useState<boolean>(false);
   // An array to track which country indexes have been revealed
@@ -56,11 +55,12 @@ function App() {
     }
   }, [message]);
 
+  //https://the-100-backend-009dc87480ee.herokuapp.com/api/female-names
   useEffect(() => {
     // Fetch population data from the Flask API
-    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/api/songs')
+    fetch('http://127.0.0.1:5000/api/female-names')
       .then((response) => response.json())
-      .then((data) => {setDataSet(data)})  // Store the data in the `countries` state
+      .then((data) => {console.log(data);setDataSet(data)})  // Store the data in the `countries` state
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
@@ -96,7 +96,7 @@ function App() {
 
     // 3) Check if guess is in data set
     const index = dataSet.findIndex(
-      (item) => normalize(item.song_title) === trimmedGuess
+      (item) => normalize(item.name) === trimmedGuess
     );
     const points = index !== -1 ? index + 1 : 0;
 
@@ -230,7 +230,7 @@ function App() {
               <FlipCard
                 key={index}
                 index={index}
-                song={name}
+                girlNames={name}
                 isGuessed={isGuessed}
                 isRevealed={isRevealed}
                 itemHeight={itemHeight}
@@ -257,7 +257,7 @@ function App() {
             onChange={(e) => setGuess(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
             className={`max-w-[200px] bg-white border-2 p-2 text-lg rounded md:mt-3 ${shakeInput ? "shake border-red-500" : "border-black"}`}
-            placeholder="Enter song name"
+            placeholder="Enter name"
           />
           <button onClick={handleGuess} className="mt-4 px-8 py-2 bg-black font-semibold text-white rounded">Guess</button>
         </>

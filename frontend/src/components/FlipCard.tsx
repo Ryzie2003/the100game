@@ -1,15 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 
 
-interface Song {
-  song_title: string;
-  streams: number;
-  song_and_artist: string;
+interface GirlNames {
+  name: string;
+  count: number;
 }
 
 interface FlipCardProps {
   index: number;
-  song: Song;
+  girlNames: GirlNames;
   isGuessed: boolean;
   isRevealed: boolean;
   itemHeight: number;
@@ -48,7 +47,7 @@ function useInView(options: IntersectionObserverInit): [React.RefObject<HTMLLIEl
 
 export default function FlipCard(props: FlipCardProps) {
     
-    const { index, song, isGuessed, isRevealed, itemHeight, pendingFlip, setPendingFlip, flipping, setFlipping } = props;
+    const { index, girlNames, isGuessed, isRevealed, itemHeight, pendingFlip, setPendingFlip, flipping, setFlipping } = props;
 
     // Use the custom hook with a threshold to detect when the card is at least half visible.
     const [cardRef, inView] = useInView({ threshold: 0.5 });
@@ -87,12 +86,12 @@ export default function FlipCard(props: FlipCardProps) {
           <div className="flip-card w-full h-full">
             <div className={`flip-card-inner w-full h-full ${flipping ? 'flipped' : ''}`}>
               <div className={`flip-card-front ${
-                song.song_and_artist.length > 22 ? 'text-sm' : 'text-[0.85em]'
+                girlNames.name.length > 22 ? 'text-sm' : 'text-[0.85em]'
               }`}>
-                {`${index + 1}. ${song.song_and_artist}`}
+                {`${index + 1}. ${girlNames.name}`}
               </div>
               <div className="flip-card-back text-[0.85em]">
-                {`Streams: ${song.streams}`}
+                {`People: ${girlNames.count}`}
               </div>
             </div>
           </div>
