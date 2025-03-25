@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import './App.css';
 import FlipCard from './components/FlipCard';
+import ReactGA from "react-ga4";
 
 // geography, entertainment, sports, history, science + nature, miscellaneous
 
@@ -57,6 +58,13 @@ function App() {
   const revealDelay = 100;
 
   const gameOver = attempts >= maxAttempts;
+
+  useEffect(() => {
+    ReactGA.initialize("G-Z30NM4H9VP");
+
+    ReactGA.send({ hitType: "pageview", page: "/main-page", title: "Main Page" });
+
+  }, [])
 
   // message stays for 2 second
   useEffect(() => {
