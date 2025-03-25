@@ -72,7 +72,7 @@ function App() {
     return str
       .toLowerCase()
       .replace(/[^\w\s]|_/g, "") // remove punctuation and underscores
-      .replace(/\s+/g, " ")      // collapse multiple spaces
+      .replace(/\s+/g, "")      // collapse multiple spaces
       .trim();
   }
   
