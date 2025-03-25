@@ -177,9 +177,9 @@ function App() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen text-center">
-      <h1 className='text-[3.5em] mb-[-5px] font-bold'>The 100 Game</h1>
-      <p className='text-lg mb-2 md:mb-4'>Topic: {dailyTopic}</p>
-      <p>Guess the Top 100 - the closer you are to #100, the better!</p>
+      <h1 className='text-[3.5em] mt-[-0.5em] font-bold'>The 100 Game</h1>
+      <p className='text-lg mb-2 md:mb-4'><p className='text-blue-500 inline font-bold'>Today's Topic</p>: {dailyTopic}</p>
+      <p className='mb-6'>Guess the Top 100 - the closer you are to #100, the better!</p>
       {message && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
           {message}
