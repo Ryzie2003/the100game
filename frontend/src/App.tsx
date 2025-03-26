@@ -23,7 +23,7 @@ function App() {
   const [score, setScore] = useState<number>(0);
   const [guesses, setGuesses] = useState<Guess[]>([]);
   const [dataSet, setDataSet] = useState<TopicOfTheDay[]>([]);
-  const [dailyTopic, setDailyTopic] = useState<string>("Highest Grossing Films - All Time");
+  const [dailyTopic, setDailyTopic] = useState<string>("Most Populated Countries");
   
   
   const [archiveTopics] = useState<string[]>([
@@ -80,9 +80,9 @@ function App() {
   //https://the-100-backend-009dc87480ee.herokuapp.com/api/female-names
   useEffect(() => {
     // Fetch population data from the Flask API
-    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/api/top-movies')
+    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/api/top-countries')
       .then((response) => response.json())
-      .then((data) => {console.log(data);setDataSet(data)})  // Store the data in the `countries` state
+      .then((data) => {setDataSet(data)})  // Store the data in the `countries` state
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 

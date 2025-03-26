@@ -91,7 +91,7 @@ export default function FlipCard(props: FlipCardProps) {
                 {`${index + 1}. ${topicOfTheDay.name}`}
               </div>
               <div className="flip-card-back text-[0.85em]">
-                {`Gross: ${topicOfTheDay.count}`}
+                {`Pop.: ${topicOfTheDay.count}`}
               </div>
             </div>
           </div>
