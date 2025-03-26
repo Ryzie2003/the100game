@@ -210,7 +210,15 @@ function App() {
 
 
   const handleCopyScore = () => {
-    const shareMessage = `Play The 100 Game! I scored ${score} points in The 100 Game: ${dailyTopic}! Check it out at ${window.location.href}. Can you beat my score?`;
+    // Extract rankings for only valid guesses (where points > 0)
+    const allGuesses = guesses
+      .filter(g => g.points >= 0)
+      .map(g => `#${g.points}`);
+  
+    const shareMessage = `The 100 Game: I scored ${score} points in ${dailyTopic}!
+  My guesses: ${allGuesses.join(', ')}
+  Can you beat my score? Check it out: ${window.location.href}`;
+  
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareMessage)
         .then(() => {
@@ -222,7 +230,7 @@ function App() {
         });
     } else {
       setMessage("Clipboard not supported in this browser.");
-    } 
+    }
   };
 
   const handleSelectTopic = (topic: string) => {
