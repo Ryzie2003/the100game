@@ -53,7 +53,7 @@ function App() {
   const [shakeInput, setShakeInput] = useState<boolean>(false);
   const listRef = useRef<HTMLDivElement>(null);
   // New state for countdown timer
-  // const [countdown, setCountdown] = useState<string>('');
+  const [countdown, setCountdown] = useState<string>('');
   const maxAttempts = 6;
   const itemHeight = 48;
 
@@ -145,31 +145,31 @@ function App() {
     setGuess('');
   };
 
-  //  // Countdown timer update: calculates time until next 7am
-  //   useEffect(() => {
-  //     const updateCountdown = () => {
-  //       const now = new Date();
-  //       const next7am = new Date();
-  //       next7am.setHours(7, 0, 0, 0);
-  //       // If it's already past 7am today, target tomorrow at 7am
-  //       if (now >= next7am) {
-  //         next7am.setDate(next7am.getDate() + 1);
-  //       }
-  //       const diff = next7am.getTime() - now.getTime();
-  //       const hours = Math.floor(diff / (1000 * 60 * 60));
-  //       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  //       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-  //       setCountdown(
-  //         `${hours.toString().padStart(2, '0')}:` +
-  //         `${minutes.toString().padStart(2, '0')}:` +
-  //         `${seconds.toString().padStart(2, '0')}`
-  //       );
-  //     };
+   // Countdown timer update: calculates time until next 7am
+    useEffect(() => {
+      const updateCountdown = () => {
+        const now = new Date();
+        const next7am = new Date();
+        next7am.setHours(7, 0, 0, 0);
+        // If it's already past 7am today, target tomorrow at 7am
+        if (now >= next7am) {
+          next7am.setDate(next7am.getDate() + 1);
+        }
+        const diff = next7am.getTime() - now.getTime();
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        setCountdown(
+          `${hours.toString().padStart(2, '0')}:` +
+          `${minutes.toString().padStart(2, '0')}:` +
+          `${seconds.toString().padStart(2, '0')}`
+        );
+      };
       
-  //     const interval = setInterval(updateCountdown, 1000);
-  //     updateCountdown();
-  //     return () => clearInterval(interval);
-  //   }, []);
+      const interval = setInterval(updateCountdown, 1000);
+      updateCountdown();
+      return () => clearInterval(interval);
+    }, []);
 
 
   useEffect(() => {
@@ -362,10 +362,10 @@ function App() {
               <h2 className="text-2xl font-bold mb-2">Game Over!</h2>
               <p className="text-xl mb-4">Final Score: {score}</p>
               {/* New Countdown Timer Section */}
-        { /* <div className="mb-4">
+              <div className="mb-4">
                 <p className="text-lg">Next game starts in:</p>
                 <p className="text-2xl font-mono">{countdown}</p>
-              </div>*/}
+              </div>
               <div className="flex flex-col gap-y-3">
                 <button
                   onClick={handleRevealAnswers}
