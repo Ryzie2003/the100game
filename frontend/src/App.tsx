@@ -52,6 +52,8 @@ function App() {
 
   const [shakeInput, setShakeInput] = useState<boolean>(false);
   const listRef = useRef<HTMLDivElement>(null);
+  // New state for countdown timer
+  const [countdown, setCountdown] = useState<string>('');
   const maxAttempts = 6;
   const itemHeight = 48;
 
@@ -63,7 +65,6 @@ function App() {
     ReactGA.initialize("G-Z30NM4H9VP");
 
     ReactGA.send({ hitType: "pageview", page: "/main-page", title: "Main Page" });
-
   }, [])
 
   // message stays for 2 second
@@ -144,6 +145,33 @@ function App() {
     setGuess('');
   };
 
+   // Countdown timer update: calculates time until next 7am
+    useEffect(() => {
+      const updateCountdown = () => {
+        const now = new Date();
+        const next7am = new Date();
+        next7am.setHours(7, 0, 0, 0);
+        // If it's already past 7am today, target tomorrow at 7am
+        if (now >= next7am) {
+          next7am.setDate(next7am.getDate() + 1);
+        }
+        const diff = next7am.getTime() - now.getTime();
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        setCountdown(
+          `${hours.toString().padStart(2, '0')}:` +
+          `${minutes.toString().padStart(2, '0')}:` +
+          `${seconds.toString().padStart(2, '0')}`
+        );
+      };
+      
+      const interval = setInterval(updateCountdown, 1000);
+      updateCountdown();
+      return () => clearInterval(interval);
+    }, []);
+
+
   useEffect(() => {
     if (guesses.length > 0 && listRef.current) {
       const lastGuess = guesses[guesses.length - 1];
@@ -211,7 +239,7 @@ function App() {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen text-center">
       <h1 className='text-[3.5em] mt-[-0.5em] xs:mt-5 font-bold'>The 100 Game</h1>
-      <p className='text-lg mb-2 md:mb-4'><p className='text-blue-500 inline font-bold'>Today's Topic</p>: {dailyTopic}</p>
+      <p className='text-lg mb-2 md:mb-4'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p>
       <p className='mb-6'>Guess the Top 100 - the closer you are to #100, the better!</p>
       {message && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
@@ -232,7 +260,7 @@ function App() {
         className="fixed bottom-4 left-4 text-gray-600 text-lg flex items-center justify-center cursor-pointer hover:text-black"
         title="Archive"
       >
-        Archive
+        {/* Archive */}
       </p>
       {/* Archive Modal */}
       {showArchive && (
@@ -329,28 +357,31 @@ function App() {
           <button onClick={handleGuess} className="mt-4 px-8 py-2 bg-black font-semibold text-white rounded">Guess</button>
         </>
       ) }
-       {gameOver && ( <div className='flex flex-col items-center justify-center'>
-        {/* <h2 className="text-2xl">Game Over! Final Score: {score}</h2> */}
-        <div className="flex flex-col items-center justify-center min-h-[40px] mt-2 mb-[-0.2em]">
-          <h2 className="text-xl">Game Over! Final Score: {score}</h2>
-        </div>
-
-        <div className="flex flex-col gap-y-3 mt-6">
-          <button
-            onClick={handleRevealAnswers}
-            className="w-36 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
-          >
-            {revealAnswers ? 'Hide Answers' : 'Reveal Answers' }
-          </button>
-          <button
-            onClick={handleCopyScore}
-            className="w-36 h-11 bg-green-600 text-white rounded hover:bg-green-500"
-          >
-            Share Score
-          </button>
-        </div>
-      </div>
-      )}
+       {gameOver && (
+            <div className='flex flex-col items-center justify-center p-4 border-t mt-4'>
+              <h2 className="text-2xl font-bold mb-2">Game Over!</h2>
+              <p className="text-xl mb-4">Final Score: {score}</p>
+              {/* New Countdown Timer Section */}
+              <div className="mb-4">
+                <p className="text-lg">Next game starts in:</p>
+                <p className="text-2xl font-mono">{countdown}</p>
+              </div>
+              <div className="flex flex-col gap-y-3">
+                <button
+                  onClick={handleRevealAnswers}
+                  className="w-36 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
+                >
+                  {revealAnswers ? 'Hide Answers' : 'Reveal Answers'}
+                </button>
+                <button
+                  onClick={handleCopyScore}
+                  className="w-36 h-11 bg-green-600 text-white rounded hover:bg-green-500"
+                >
+                  Share Score
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* ATTEMPTS INDICATOR */}
           {attempts < maxAttempts && 
