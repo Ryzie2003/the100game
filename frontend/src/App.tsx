@@ -392,10 +392,10 @@ function App() {
               return (
                 <div
                   key={idx}
-                  className={`w-5 h-5 rounded-full border-2 ${
+                  className={`w-5 h-5 rounded-full ${
                     usedAttempt
                       ? 'bg-white'
-                      : 'border-blue-400 bg-blue-400'
+                      : 'border-blue-400 bg-blue-400 border-2'
                   }`}
                 ></div>
               );
