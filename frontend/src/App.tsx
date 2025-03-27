@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import './App.css';
 import FlipCard from './components/FlipCard';
 import ReactGA from "react-ga4";
+import { Info } from 'lucide-react';
 
 // geography, entertainment, sports, history, science + nature, miscellaneous
 
@@ -246,9 +247,9 @@ function App() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen text-center">
-      <h1 className='text-[3.5em] mt-[-0.5em] xs:mt-5 font-bold'>The 100 Game</h1>
-      <p className='text-lg mb-2 md:mb-4'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p>
-      <p className='mb-6'>Guess the Top 100 - the closer you are to #100, the better!</p>
+      <h1 className='text-[2.5em] mt-[-0.5em] md:text-[3em] xs:mt-5 font-bold'>The 100 Game</h1>
+      <p className='text-lg mb-1 md:mb-2'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p>
+      <p className='mb-2'> Guess the Top 100 - the closer you are to #100, the better!</p>
       {message && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
           {message}
@@ -257,10 +258,10 @@ function App() {
       {/* How to Play Button */}
       <button
         onClick={() => setShowInstructions(true)}
-        className="fixed bottom-4 right-4 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600"
+        className="px-3 py-2 bg-[#EBE2D2] text-black border bg-opacity-50 cursor-pointer rounded flex items-center justify-center hover:bg-[#f3eee4]"
         title="How to Play"
       >
-        ?
+        <Info size={18} className='mr-1'/> How to Play
       </button>
       {/* Archive Button */}
       <p
@@ -322,8 +323,8 @@ function App() {
           </div>
         </div>
       )}
-      <div className="flex flex-col md:flex-row md:gap-8 md:mt-5 lg:gap-14 lg:mt-8">
-      <div className= "relative min-w-[250px] w-66 h-80 md:h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
+      <div className="flex flex-col md:flex-row md:gap-8 md:mt-3 lg:gap-14 lg:mt-6">
+      <div className= "relative min-w-[250px] w-66 h-75 md:h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
         <ul className= "h-[full] relative flex flex-col justify-center items-center bg-[#FCFCF4]" >
           {dataSet.map((name, index) => {
             console.log(name);
@@ -353,17 +354,17 @@ function App() {
       </div>
       : " " }
       {attempts < maxAttempts && (
-        <>
+        <div className='flex flex-row gap-1 md:flex-col md:gap-3'>
           <input
             type="text"
             value={guess}
             onChange={(e) => setGuess(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGuess()}
-            className={`max-w-[200px] bg-white border-2 p-2 text-lg rounded md:mt-3 ${shakeInput ? "shake border-red-500" : "border-black"}`}
+            className={`max-w-[160px] bg-white border-2 p-2 text-lg rounded ${shakeInput ? "shake border-red-500" : "border-black"} md:max-w-[200px]`}
             placeholder="Enter name"
           />
-          <button onClick={handleGuess} className="mt-4 px-8 py-2 bg-black font-semibold text-white rounded">Guess</button>
-        </>
+          <button onClick={handleGuess} className="px-4 py-2 bg-black font-semibold text-white rounded md:px-6">Guess</button>
+        </div>
       ) }
        {gameOver && (
             <div className='flex flex-col items-center justify-center p-4 border-t mt-4'>
