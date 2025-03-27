@@ -300,7 +300,7 @@ function App() {
        {/* Instructions Modal */}
        {showInstructions && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-50 z-50">
-          <div className="bg-white p-4 sm:p-6 rounded-lg max-w-md mx-auto">
+          <div className="bg-white max-w-sm p-4 sm:p-6 rounded-lg sm:max-w-md mx-auto">
             <h2 className="text-md sm:text-xl font-bold mb-4">How to Play</h2>
             <p className="text-[0.9em] sm:text-[1em] text-left">
               <strong>Objective:</strong> Total the most points by guessing items in the top 100 list.
