@@ -299,30 +299,53 @@ function App() {
       )}
        {/* Instructions Modal */}
        {showInstructions && (
-        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-50 z-50">
-          <div className="bg-white max-w-sm p-4 sm:p-6 rounded-lg sm:max-w-md mx-auto">
-            <h2 className="text-md sm:text-xl font-bold mb-4">How to Play</h2>
-            <p className="text-[0.9em] sm:text-[1em] text-left">
-              <strong>Objective:</strong> Total the most points by guessing items in the top 100 list.
-            </p>
-            <p className="text-[0.9em] sm:text-[1em] mt-2 text-left">
-              <strong>Scoring:</strong> Points are based on the ranking of your correct guess. Higher ranks earn more points (i.e. rank 99 earns 99 points). 
+          <div className="fixed inset-0 flex items-center justify-center backdrop-blur-md bg-opacity-50 z-50">
+            <div className="relative bg-white max-w-sm p-4 sm:p-6 rounded-lg sm:max-w-md mx-auto">
+              {/* Header and Close Button */}
+              <div className="relative mb-4">
+                <h2 className="text-center text-lg sm:text-xl font-bold">How to Play</h2>
+                <button
+                  onClick={() => setShowInstructions(false)}
+                  className="absolute right-0 top-0 text-gray-500 hover:text-black"
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
               
-              <em> If your guess is invalid or not in the top 100, you get 0 points.</em>
-            </p>
-            <p className="text-[0.9em] sm:text-[1em] mt-2 text-left">
-              <strong>Gameplay:</strong> You have 6 attempts. When items are revealed, hover over them for additional details.
-            </p>
-
-            <button
-              onClick={() => setShowInstructions(false)}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Got it!
-            </button>
+              
+              {/* Game Objective */}
+              <div className="mb-4 text-left">
+                <h3 className="font-semibold mb-1 text-[1em]">Game Objective</h3>
+                <p className="text-sm sm:text-base">
+                  Guess items from today's topic of the world's top 100 list. 
+                  The closer your guess is to #100, the better!
+                </p>
+              </div>
+              
+              {/* How to Play */}
+              <div className="mb-4 text-left">
+                <h3 className="font-semibold mb-1 text-[1em]">Gameplay</h3>
+                <ol className="list-decimal list-inside space-y-1 text-sm sm:text-base">
+                  <li>Enter your guess in the search box.</li>
+                  <li>If your guess is correct, it will appear on the board.</li>
+                  <li>The board shows where your guess ranks in the top 100.</li>
+                  <li>You have 6 guesses to get your highest score</li>
+                </ol>
+              </div>
+              
+              {/* Scoring */}
+              <div className="mb-4 text-left">
+                <h3 className="font-semibold mb-1">Scoring</h3>
+                <p className="text-sm sm:text-base">
+                  You get points based on how many items you correctly identify. 
+                  Bonus points are awarded for guessing items closer to the bottom of the list (#100).
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
       <div className="flex flex-col md:flex-row md:gap-8 md:mt-3">
       <div className= "relative min-w-[250px] w-56 h-75 sm:w-66 md:h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
         <ul className= "h-[full] relative flex flex-col justify-center items-center bg-[#FCFCF4]" >
