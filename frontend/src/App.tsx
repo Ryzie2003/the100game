@@ -44,6 +44,8 @@ function App() {
   // user feedback
   const [message, setMessage] = useState<string>('');
 
+  const [showGameOver, setShowGameOver] = useState<boolean>(false);
+
   // instructions modal
   const [showInstructions, setShowInstructions] = useState<boolean>(true);
   
@@ -81,9 +83,12 @@ function App() {
   //https://the-100-backend-009dc87480ee.herokuapp.com/api/female-names
   useEffect(() => {
     // Fetch population data from the Flask API
-    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/api/top-countries')
+    fetch('https://the-100-backend-009dc87480ee.herokuapp.com/current-topic')
       .then((response) => response.json())
-      .then((data) => {setDataSet(data)})  // Store the data in the `countries` state
+      .then((data) => {
+        setDailyTopic(data.title);
+        setDataSet(data.items);
+      })  // Store the data in the `countries` state
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
@@ -218,7 +223,7 @@ function App() {
   
     const shareMessage = `The 100 Game: I scored ${score} points in ${dailyTopic}!
   My guesses: ${allGuesses.join(', ')}
-  Can you beat my score? Check it out: ${window.location.href}`;
+  ${window.location.href}`;
   
     if (navigator.clipboard) {
       navigator.clipboard.writeText(shareMessage)
@@ -247,9 +252,9 @@ function App() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen text-center">
-      <h1 className='text-[2.5em] mt-[-0.5em] md:text-[3em] xs:mt-5 font-bold'>The 100 Game</h1>
-      <p className='text-md mb-1 md:mb-2 sm:text-lg'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p>
-      <p className='mb-2 text-sm sm:text-base'> Guess the Top 100 - the closer you are to #100, the better!</p>
+      <h1 className='text-[2.5em] mt-[-0.5em] md:text-[3em] xs:mt-5 font-bold z-100'>The 100 Game</h1>
+      <p className='text-md mb-1 md:mb-2 sm:text-lg z-100'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p>
+      <p className='mb-2 text-xs sm:text-base'> Guess the Top 100 - the closer you are to #100, the better!</p>
       {message && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
           {message}
@@ -306,7 +311,7 @@ function App() {
                 <h2 className="text-center text-lg sm:text-xl font-bold">How to Play</h2>
                 <button
                   onClick={() => setShowInstructions(false)}
-                  className="absolute right-0 top-0 text-gray-500 hover:text-black"
+                  className="absolute right-0 top-0 text-gray-500 cursor:pointer hover:text-black"
                   aria-label="Close"
                 >
                   ✕
@@ -350,7 +355,6 @@ function App() {
       <div className= "relative min-w-[250px] w-56 h-75 sm:w-66 md:h-100 border rounded mt-1 overflow-y-auto hide-scrollbar" ref={listRef}>
         <ul className= "h-[full] relative flex flex-col justify-center items-center bg-[#FCFCF4]" >
           {dataSet.map((name, index) => {
-            console.log(name);
             const isGuessed = guesses.some((g) => g.index === index);
             const isRevealed = isGuessed || (revealAnswers && revealed[index]);
             return (
@@ -390,28 +394,63 @@ function App() {
         </div>
       ) }
        {gameOver && (
-            <div className='flex flex-col items-center justify-center p-4 border-t mt-4'>
-              <h2 className="text-2xl font-bold mb-2">Game Over!</h2>
-              <p className="text-xl mb-4">Final Score: {score}</p>
-              {/* New Countdown Timer Section */}
+            <div className='flex flex-col items-center justify-center p-4 mt-4'>
+              <div className="flex flex-col gap-y-3">
+                <h2 className='text-2xl font-semibold'>Game Over!</h2>
+                <button
+                  onClick={() => setShowGameOver(true)}
+                  className="w-36 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
+                >
+                  View Results
+                </button>
+              </div>
+            </div>
+          )}
+
+          {showGameOver && (
+            <div className="fixed inset-0 top-20 flex items-center justify-center bg-opacity-50 z-50">
+            <div className="relative bg-[#EBE2D2] py-2 sm:p-6 rounded-lg mx-auto w-[60vw] h-[75vh] shadow-lg flex flex-col items-center justify-center">
+            {/*<h1 className='text-[2.5em] mt-[-0.5em] md:text-[3em] xs:mt-5 font-bold'>The 100 Game</h1>
+            <p className='text-md mb-1 md:mb-2 sm:text-lg'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p> */}
+     
+              {/* Header and Close Button */}
+              <div className="relative mb-4">
+                {/* <h2 className="text-xl font-bold mb-2">Game Over!</h2> */}
+                <h2 className="text-center text-xl sm:text-2xl font-bold">Results</h2>
+              </div>
+              
+              <div className='flex flex-row justify-center items-center gap-10 mb-10'>
+                <ul className='text-lg'>
+                  <p className='font-semibold'>Guesses</p>
+                  {guesses.map((guess, ind) => (<li>{ind + 1}. {guess.name} - {guess.points}</li>))}
+                </ul>
+                <div className='flex flex-col justify-center items-center'>
+                <p className="text-xl font-light">Final Score </p>
+                <p className='text-3xl font-semibold'>{score}</p>
+                </div>
+              </div>
+              {/* New Countdown Timer Section  */}
               <div className="mb-4">
                 <p className="text-lg">Next game starts in:</p>
                 <p className="text-2xl font-mono">{countdown}</p>
               </div>
-              <div className="flex flex-col gap-y-3">
-                <button
-                  onClick={handleRevealAnswers}
+              <div className="flex flex-row justify-center items-center gap-3">
+              <button
+                  onClick={() => setShowGameOver(false)}
                   className="w-36 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
                 >
-                  {revealAnswers ? 'Hide Answers' : 'Reveal Answers'}
+                  See Answers
                 </button>
-                <button
+              <button
                   onClick={handleCopyScore}
                   className="w-36 h-11 bg-green-600 text-white rounded hover:bg-green-500"
                 >
                   Share Score
-                </button>
+              </button>
+              
               </div>
+              <a className='mt-3'>Want to play more? Archive</a>
+            </div>
             </div>
           )}
 
