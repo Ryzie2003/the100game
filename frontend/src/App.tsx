@@ -367,7 +367,7 @@ function App() {
       <div className="flex flex-col md:flex-row md:gap-8 sm:mt-3">
         {showGameOver && (
             <div className="fixed inset-0 top-25 flex items-center justify-center bg-opacity-50 z-50">
-            <div className="relative bg-[#EBE2D2] py-2 sm:p-6 max-w-[500px] rounded-lg mx-auto w-[60vw] h-[76vh] shadow-lg flex flex-col items-center justify-center">
+            <div className="relative bg-[#EBE2D2] py-2 sm:p-6 max-w-[500px] rounded-lg mx-auto w-[80%] h-[76vh] shadow-lg flex flex-col items-center justify-center">
             {/*<h1 className='text-[2.5em] mt-[-0.5em] md:text-[3em] xs:mt-5 font-bold'>The 100 Game</h1>
             <p className='text-md mb-1 md:mb-2 sm:text-lg'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p> */}
      
