@@ -87,6 +87,7 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         setDailyTopic(data.title);
+        console.log(data.items);
         setDataSet(data.items);
       })  // Store the data in the `countries` state
       .catch((error) => console.error("Error fetching data:", error));
@@ -201,6 +202,13 @@ function App() {
     }
   }, [guesses]);
 
+  useEffect(() => {
+    if (attempts >= maxAttempts) {
+      handleRevealAnswers();
+    }
+  }, [attempts, maxAttempts]);
+  
+
   const handleRevealAnswers = () => {
     setRevealAnswers(prev => !prev);
     for (let i = 100; i >= 0; i--) {
@@ -252,8 +260,8 @@ function App() {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen text-center">
-      <h1 className='text-[2.5em] mt-[-0.5em] md:text-[3em] xs:mt-5 font-bold z-100'>The 100 Game</h1>
-      <p className='text-md mb-1 md:mb-2 sm:text-lg z-100'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p>
+      <h1 className='text-[2.5em] mt-[-0.5em] md:text-[3em] xs:mt-5 font-bold'>The 100 Game</h1>
+      <p className='text-md mb-1 md:mb-2 sm:text-lg'><p className='text-blue-500 inline font-bold'>{showArchive ? 'Archived Topic' : "Today's Topic"}</p>: {dailyTopic}</p>
       <p className='mb-2 text-xs sm:text-base'> Guess the Top 100 - the closer you are to #100, the better!</p>
       {message && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded shadow-lg">
@@ -393,19 +401,19 @@ function App() {
           <button onClick={handleGuess} className="px-4 py-2 bg-black font-semibold text-white rounded md:px-6">Guess</button>
         </div>
       ) }
-       {gameOver && (
-            <div className='flex flex-col items-center justify-center p-4 mt-4'>
-              <div className="flex flex-col gap-y-3">
-                <h2 className='text-2xl font-semibold'>Game Over!</h2>
-                <button
-                  onClick={() => setShowGameOver(true)}
-                  className="w-36 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
-                >
-                  View Results
-                </button>
-              </div>
-            </div>
-          )}
+       {(gameOver) &&
+          <div className='flex flex-col items-center justify-center p-4 mt-4'>
+          <div className="flex flex-col gap-y-3">
+            <h2 className='text-2xl font-semibold'>Game Over!</h2>
+            <button
+              onClick={() => setShowGameOver(true)}
+              className="w-36 h-11 bg-gray-800 text-white rounded hover:bg-gray-700"
+            >
+              View Results
+            </button>
+          </div>
+        </div>
+       }
 
           {showGameOver && (
             <div className="fixed inset-0 top-20 flex items-center justify-center bg-opacity-50 z-50">
